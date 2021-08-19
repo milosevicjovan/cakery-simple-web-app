@@ -15,6 +15,6 @@ namespace Cakery_Backend.Models
         public decimal Price { get; set; }
         public decimal Promotion { get; set; }
         public decimal Quantity { get; set; }
-
+        public decimal Sum { get; set; }
     }
 }
