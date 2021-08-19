@@ -77,6 +77,18 @@
       <DependentUpon>CakeryDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Role.cs">
+      <DependentUpon>CakeryDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="User.cs">
+      <DependentUpon>CakeryDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserClaim.cs">
+      <DependentUpon>CakeryDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserLogin.cs">
+      <DependentUpon>CakeryDataModel.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EntityDeploy Include="CakeryDataModel.edmx">

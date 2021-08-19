@@ -12,22 +12,18 @@ namespace CakeryDataAccess
     using System;
     using System.Collections.Generic;
     
-    public partial class Order
+    public partial class Role
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Order()
+        public Role()
         {
-            this.OrderItems = new HashSet<OrderItem>();
+            this.Users = new HashSet<User>();
         }
     
-        public int OrderID { get; set; }
-        public string UserID { get; set; }
-        public System.DateTime Time { get; set; }
-        public string Delivery { get; set; }
-        public string PaymentMethod { get; set; }
+        public string Id { get; set; }
+        public string Name { get; set; }
     
-        public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<OrderItem> OrderItems { get; set; }
+        public virtual ICollection<User> Users { get; set; }
     }
 }
