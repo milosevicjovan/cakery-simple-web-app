@@ -24,6 +24,14 @@ namespace Cakery_Backend.Controllers
         {
             string userId = User.Identity.GetUserId();
 
+            UserDTO user = await GetUserById(userId);
+
+            return Ok(user);
+        }
+
+        // Helper method to get information about user by Id
+        public static async Task<UserDTO> GetUserById(string userId)
+        {
             using (Cakery_DbContext db = new Cakery_DbContext())
             {
                 var user = await db.Users.SingleOrDefaultAsync(u => u.Id.Equals(userId));
@@ -31,7 +39,7 @@ namespace Cakery_Backend.Controllers
                 // This should never happen.
                 if (user == null)
                 {
-                    return BadRequest("User was not found!");
+                    return null;
                 }
 
                 UserDTO userDto = new UserDTO()
@@ -43,7 +51,7 @@ namespace Cakery_Backend.Controllers
                     Address = user.Address
                 };
 
-                return Ok(userDto);
+                return userDto;
             }
         }
 
