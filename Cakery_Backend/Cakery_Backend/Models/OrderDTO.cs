@@ -17,5 +17,6 @@ namespace Cakery_Backend.Models
         public DateTime Time { get; set; }
         public string Delivery { get; set; }
         public string PaymentMethod { get; set; }
+        public decimal Sum { get; set; }
     }
 }
