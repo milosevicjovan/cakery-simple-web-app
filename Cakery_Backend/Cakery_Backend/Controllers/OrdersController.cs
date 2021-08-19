@@ -83,6 +83,7 @@ namespace Cakery_Backend.Controllers
                 foreach (Order order in orders)
                 {
                     UserDTO user = await UsersController.GetUserById(order.UserID);
+
                     ordersDto.Add(new OrderDTO()
                     {
                         OrderID = order.OrderID,
@@ -94,7 +95,7 @@ namespace Cakery_Backend.Controllers
                         Time = order.Time,
                         Delivery = order.Delivery,
                         PaymentMethod = order.PaymentMethod,
-                        Sum = 0 // TO DO
+                        Sum = await OrderItemsController.OrderSum(order.OrderID)
                     });
                 }
 
@@ -123,7 +124,7 @@ namespace Cakery_Backend.Controllers
 
                 if (String.IsNullOrEmpty(orderUser))
                 {
-                    return BadRequest("User was not found!");
+                    return BadRequest("User and/or order were not found!");
                 }
 
                 // If it is not user that has sent the order
@@ -145,7 +146,7 @@ namespace Cakery_Backend.Controllers
 
                 if (user == null)
                 {
-                    return BadRequest("User was not found!");
+                    return BadRequest("User in the order was not found!");
                 }
 
                 OrderDTO orderDto = new OrderDTO()
@@ -159,7 +160,7 @@ namespace Cakery_Backend.Controllers
                     Time = order.Time,
                     Delivery = order.Delivery,
                     PaymentMethod = order.PaymentMethod,
-                    Sum = 0 // TO DO
+                    Sum = await OrderItemsController.OrderSum(order.OrderID)
                 };
 
                 return Ok(orderDto);
@@ -194,7 +195,7 @@ namespace Cakery_Backend.Controllers
         }
 
         // Helper method to determine who has sent the order.
-        private async Task<string> OrderUser(int orderId)
+        public static async Task<string> OrderUser(int orderId)
         {
             using (Cakery_DbContext db = new Cakery_DbContext())
             {
