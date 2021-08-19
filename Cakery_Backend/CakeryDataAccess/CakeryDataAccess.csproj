@@ -66,7 +66,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CakeryDataModel.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Class1.cs" />
     <Compile Include="Order.cs">
       <DependentUpon>CakeryDataModel.tt</DependentUpon>
     </Compile>

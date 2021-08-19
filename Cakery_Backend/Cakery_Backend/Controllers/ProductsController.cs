@@ -69,7 +69,7 @@ namespace Cakery_Backend.Controllers
         public async Task<IHttpActionResult> AddProduct([FromBody]Product product)
         {
             string userId = User.Identity.GetUserId();
-            bool IsUserAdmin = await IsAdmin(userId);
+            bool IsUserAdmin = await UsersController.IsAdmin(userId);
 
             if (!IsUserAdmin)
             {
@@ -101,7 +101,7 @@ namespace Cakery_Backend.Controllers
         public async Task<IHttpActionResult> DeleteProduct(int id)
         {
             string userId = User.Identity.GetUserId();
-            bool IsUserAdmin = await IsAdmin(userId);
+            bool IsUserAdmin = await UsersController.IsAdmin(userId);
 
             if (!IsUserAdmin)
             {
@@ -122,21 +122,6 @@ namespace Cakery_Backend.Controllers
                 await db.SaveChangesAsync();
 
                 return Ok($"Product { product.Name } is deleted.");
-            }
-        }
-
-        private async Task<bool> IsAdmin(string userId)
-        {
-            using (Cakery_DbContext db = new Cakery_DbContext())
-            {
-                Role role = await db.Roles.SingleOrDefaultAsync(r => r.Id.Equals(userId));
-                if (role.Name.Equals("admin"))
-                {
-                    return true;
-                } else
-                {
-                    return false;
-                }
             }
         }
     }
