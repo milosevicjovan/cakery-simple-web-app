@@ -16,6 +16,38 @@ namespace Cakery_Backend.Controllers
     [Authorize]
     public class OrdersController : ApiController
     {
+        [HttpDelete]
+        [Route("api/orders/{id}")]
+        public async Task<IHttpActionResult> DeleteOrder(int id)
+        {
+            string userId = User.Identity.GetUserId();
+
+            string orderUser = await OrderUser(id);
+            // If it is not user that has sent the order
+            // RETURN BAD REQUEST
+            // EVEN ADMIN has no rights to delete an order
+            if (!userId.Equals(orderUser))
+            {
+                return BadRequest("You are not authorized!");
+            }
+
+            using (Cakery_DbContext db = new Cakery_DbContext())
+            {
+                Order order = await db.Orders.SingleOrDefaultAsync(p => p.OrderID == id);
+
+                if (order == null)
+                {
+                    return BadRequest($"Product with ID={ id } was not found!");
+                }
+
+                db.Orders.Remove(order);
+
+                await db.SaveChangesAsync();
+
+                return Ok($"Product { order.OrderID } is deleted.");
+            }
+        }
+
         // Get all orders
         // If user is not admin, only orders that he had been made will be displayed
         // If user is admin, all orders will be displayed
@@ -35,7 +67,8 @@ namespace Cakery_Backend.Controllers
                 if (IsUserAdmin)
                 {
                     orders = await db.Orders.OrderByDescending(o => o.OrderID).ToListAsync();
-                } else
+                }
+                else
                 {
                     orders = await db.Orders.Where(o => o.UserID.Equals(userId)).OrderByDescending(o => o.OrderID).ToListAsync();
                 }
@@ -87,6 +120,12 @@ namespace Cakery_Backend.Controllers
             {
 
                 string orderUser = await OrderUser(id);
+
+                if (String.IsNullOrEmpty(orderUser))
+                {
+                    return BadRequest("User was not found!");
+                }
+
                 // If it is not user that has sent the order
                 // AND IS NOT AN ADMIN
                 // RETURN BAD REQUEST
@@ -151,38 +190,6 @@ namespace Cakery_Backend.Controllers
                 await db.SaveChangesAsync();
 
                 return Created("", $"Order { order.OrderID } is created.");
-            }
-        }
-
-        [HttpDelete]
-        [Route("api/orders/delete/{id}")]
-        private async Task<IHttpActionResult> DeleteOrder(int id)
-        {
-            string userId = User.Identity.GetUserId();
-
-            string orderUser = await OrderUser(id);
-            // If it is not user that has sent the order
-            // RETURN BAD REQUEST
-            // EVEN ADMIN has no rights to delete an order
-            if (!userId.Equals(orderUser))
-            {
-                return BadRequest("You are not authorized!");
-            }
-
-            using (Cakery_DbContext db = new Cakery_DbContext())
-            {
-                var order = await db.Orders.SingleOrDefaultAsync(o => o.OrderID == id);
-
-                if (order == null)
-                {
-                    return BadRequest("Order was not found!");
-                }
-
-                db.Orders.Remove(order);
-
-                await db.SaveChangesAsync();
-
-                return Ok($"Order { order.OrderID } is deleted.");
             }
         }
 
