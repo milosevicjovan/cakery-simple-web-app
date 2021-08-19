@@ -8,4 +8,5 @@ export interface Order {
     time: Date;
     delivery: string;
     paymentMethod: string;
+    sum: string;
 }
