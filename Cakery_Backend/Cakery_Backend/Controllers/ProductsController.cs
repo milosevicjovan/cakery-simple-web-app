@@ -96,6 +96,42 @@ namespace Cakery_Backend.Controllers
             }
         }
 
+        [HttpPut]
+        [Route("api/products/update/{id}")]
+        public async Task<IHttpActionResult> UpdateProduct(int id, [FromBody] Product newProduct)
+        {
+            string userId = User.Identity.GetUserId();
+            bool IsUserAdmin = await UsersController.IsAdmin(userId);
+
+            if (!IsUserAdmin)
+            {
+                return BadRequest("You are not authorized!");
+            }
+
+            if (newProduct == null)
+            {
+                return BadRequest("Product object is null.");
+            }
+
+            using (Cakery_DbContext db = new Cakery_DbContext())
+            {
+                var product = await db.Products.SingleOrDefaultAsync(p => p.ProductID == id);
+
+                if (product == null)
+                {
+                    return BadRequest($"Product with ID={ id } was not found!");
+                }
+
+                product.Name = newProduct.Name;
+                product.Description = newProduct.Description;
+                product.Price = newProduct.Price;
+                product.Promotion = newProduct.Promotion;
+
+                await db.SaveChangesAsync();
+                return Ok($"Product { product.Name } is updated!");
+            }
+        }
+
         [HttpDelete]
         [Route("api/products/{id}")]
         public async Task<IHttpActionResult> DeleteProduct(int id)
@@ -122,6 +158,31 @@ namespace Cakery_Backend.Controllers
                 await db.SaveChangesAsync();
 
                 return Ok($"Product { product.Name } is deleted.");
+            }
+        }
+
+        // Helper method
+        public static async Task<ProductDTO> ProductById(int id)
+        {
+            using (Cakery_DbContext db = new Cakery_DbContext())
+            {
+                var product = await db.Products.SingleOrDefaultAsync(p => p.ProductID == id);
+
+                if (product == null)
+                {
+                    return null;
+                }
+
+                ProductDTO productDto = new ProductDTO()
+                {
+                    ProductID = product.ProductID,
+                    Name = product.Name,
+                    Description = product.Description,
+                    Price = Math.Round(product.Price, 2),
+                    Promotion = Math.Round(product.Promotion ?? 0, 2)
+                };
+
+                return productDto;
             }
         }
     }
