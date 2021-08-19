@@ -1,3 +1,5 @@
+import { RegisterComponent } from './components/register/register.component';
+import { LoginComponent } from './components/login/login.component';
 import { CartComponent } from './components/cart/cart.component';
 import { OrdersComponent } from './components/orders/orders.component';
 import { OrderComponent } from './components/order/order.component';
@@ -5,6 +7,7 @@ import { ProductsComponent } from './components/products/products.component';
 import { AboutUsComponent } from './components/about-us/about-us.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { AuthGuard } from './auth/auth.guard';
 
 const routes: Routes = [
   {
@@ -15,13 +18,22 @@ const routes: Routes = [
     component: ProductsComponent
   }, {
     path: 'orders',
-    component: OrdersComponent
+    component: OrdersComponent,
+    canActivate: [AuthGuard]
   }, {
     path: 'order',
-    component: OrderComponent
+    component: OrderComponent,
+    canActivate: [AuthGuard]
   }, {
     path: 'cart',
-    component: CartComponent
+    component: CartComponent,
+    canActivate: [AuthGuard]
+  }, {
+    path: 'login',
+    component: LoginComponent
+  }, {
+    path: 'register',
+    component: RegisterComponent
   }
 ];
 

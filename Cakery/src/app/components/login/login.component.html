@@ -1,0 +1,27 @@
+<div class="wrapper fadeInDown">
+  <div id="formContent">
+    <!-- Tabs Titles -->
+
+    <!-- Icon -->
+    <div class="fadeIn first">
+      <img src="../../../assets/icon.png" id="icon" alt="User Icon" />
+    </div>
+
+    <div class="d-flex justify-content-center">
+        <h5>Cakery - Log In</h5>
+    </div>
+
+    <!-- Login Form -->
+    <form (submit)="onLogin(loginForm)" #loginForm>
+      <input type="text" id="username" class="fadeIn second" name="username" placeholder="Username" >
+      <input type="password" id="password" class="fadeIn third" name="password" placeholder="Password">
+      <!--input type="submit" class="fadeIn fourth" value="Log In">-->
+    </form>
+
+    <!-- Remind Passowrd -->
+    <div id="formFooter">
+        <button class="btn btn-primary btn-lg fadeIn fourth" type="submit" >Log In</button>
+    </div>
+
+  </div>
+</div>

@@ -49,7 +49,7 @@ export class UsersDataService {
         };
 
         const requestOptions = {
-            headers: new HttpHeaders(headerDict);
+            headers: new HttpHeaders(headerDict)
         };
 
         this.http.post(api + '/account/register', JSON.stringify(newUser), requestOptions)
