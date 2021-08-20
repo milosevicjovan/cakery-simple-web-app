@@ -1,1 +1,71 @@
-<p>products works!</p>
+<div class="container-fluid" style="width: 90%; padding: 20px; margin-bottom: 30px;" *ngIf="isDataAvailable && !isLoading">
+    <div class="row">
+        <div class="col-9" style="display: flex; flex-direction: column; justify-content: center;">
+            <div class="row" *ngFor="let product of products">
+                <div class="col">
+                    <div class="card" style="width: 100%;">
+                        <div class="row no-gutters">
+                            <div class="col-md-3" style="align-self: center;">
+                                <img src="../../../assets/images/cake1.jfif" class="card-img" alt="product.name">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h3 class="card-title">{{ product.name }}</h3>
+                                        </div>
+                                        <div class="col" style="text-align: right;">
+                                            <h3 class="card-text" *ngIf="product.promotion > 0"
+                                                style="text-align: right; font-weight: bold; color: green">
+                                                Promotion: {{ product.promotion | number : '1.2-2' }}%</h3>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <h5 class="card-text">{{ product.description }}</h5>
+                                    <hr>
+                                    <div class="row" style="vertical-align: bottom;">
+                                        <div class="col" *ngIf="product.promotion>0">
+                                            <h3 class="card-title" style="color: red"><del>Old Price: {{ product.price | number
+                                                    : '1.2-2' }}</del></h3>
+                                            <h3 class="card-title" style="color: green; font-weight: bold;">New Price: {{
+                                                (product.price - (product.price * (product.promotion / 100))) | number : '1.2-2'
+                                                }}</h3>
+                                        </div>
+                                        <div class="col" *ngIf="product.promotion==0">
+                                            <h3 style="visibility: hidden;">Old price</h3>
+                                            <h3 class="card-title" style="font-weight: bold;">Price: {{ product.price | number :
+                                                '1.2-2' }}</h3>
+                                        </div>
+                                        <div class="col" style="text-align: right;">
+                                            <br>
+                                            <button class="btn btn-primary btn-lg" 
+                                                (click)="onClick(product.productID, product.name, product.price)">
+                                                Add to cart</button>
+                                        </div>
+                                    </div>
+        
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                    <br>
+                </div>
+            </div>
+        </div>
+        <div class="col-3" style="margin-bottom: 30px;">
+            <div class="card border-dark mb-3" style="max-width: 20rem;">
+                <div class="card-header text-lg-center">
+                    <h4 class="card-title">Cart</h4>
+                </div>
+                <div class="card-body" *ngIf="cart.length!==0">
+                  <div class="row" *ngFor="item of cart">
+                    <div class="col">
+                        <p>{{ item.name }}, {{ item.price }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </div>
+    </div>
+</div>
