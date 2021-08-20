@@ -18,10 +18,14 @@ export class ProductsDataService {
     }
 
     addProduct(product: Product) {
-        // TO DO
+        this.http.post(api + "products/", product);
+    }
+
+    updateProduct(productId: number, newProduct: Product) {
+        this.http.put(api + "products/update/" + productId, newProduct);
     }
 
     deleteProduct(productId: number) {
-        // TO DO
+        this.http.delete(api + "products/" + productId);
     }
 }
