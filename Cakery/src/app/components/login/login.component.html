@@ -12,15 +12,17 @@
     </div>
 
     <!-- Login Form -->
-    <form (submit)="onLogin(loginForm)" #loginForm>
-      <input type="text" id="username" class="fadeIn second" name="username" placeholder="Username" >
-      <input type="password" id="password" class="fadeIn third" name="password" placeholder="Password">
+    <form>
+      <input type="text" id="username" class="fadeIn second" name="username" placeholder="Username" [(ngModel)]="username">
+      <input type="password" id="password" class="fadeIn third" name="password" placeholder="Password" [(ngModel)]="password">
       <!--input type="submit" class="fadeIn fourth" value="Log In">-->
     </form>
 
     <!-- Remind Passowrd -->
     <div id="formFooter">
-        <button class="btn btn-primary btn-lg fadeIn fourth" type="submit" >Log In</button>
+        <button class="btn btn-primary btn-lg fadeIn fourth" (click)="onLogin()" >Log In</button>
+        <br><br>
+        <a href="/register">Don't have an account? Register now!</a>
     </div>
 
   </div>
