@@ -17,6 +17,7 @@ export class UsersDataService {
     private token: string;
     private username: string;
     private authStatusListener = new Subject<boolean>();
+
     private tokenTimer: any;
 
     private user: User;
@@ -33,6 +34,10 @@ export class UsersDataService {
 
     getAuthStatusListener() {
         return this.authStatusListener.asObservable();
+    }
+
+    getUser() {
+        return this.user;
     }
 
     getUsername() {
@@ -77,9 +82,6 @@ export class UsersDataService {
                     const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
                     this.saveAuthData(token, expirationDate, this.username);
                     this.router.navigate(['/products']);
-                    this.getCurrentUser().subscribe((currentUser: User) => {
-                        this.user = currentUser;
-                    });
                     resolve(this.user);
                 }
             }, error => {
@@ -113,8 +115,25 @@ export class UsersDataService {
         this.authStatusListener.next(false);
         this.username = null;
         clearTimeout(this.tokenTimer);
+        this.http.post(api + "account/logout", "");
         this.clearAuthData();
         this.router.navigate(['/login']);
+    }
+
+    autoAuthUser() {
+        const authInformation = this.getAuthData();
+        if (!authInformation){
+            return;
+        }
+        const now = new Date();
+        const expiresIn = authInformation.expirationDate.getTime() - now.getTime();
+        if (expiresIn>0) {
+            this.token = authInformation.token;
+            this.isAuthenticated = true;
+            this.username = authInformation.username;
+            this.setAuthTimer(expiresIn/1000);
+            this.authStatusListener.next(true);
+        }
     }
 
     private getAuthData() {
