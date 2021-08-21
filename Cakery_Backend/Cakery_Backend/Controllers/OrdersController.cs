@@ -190,13 +190,13 @@ namespace Cakery_Backend.Controllers
                 db.Orders.Add(order);
                 await db.SaveChangesAsync();
 
-                var items = order.OrderItems;
+                //var items = order.OrderItems;
 
-                OrderItemsController itemsController = new OrderItemsController();
-                foreach(OrderItem item in items)
-                {
-                    await itemsController.AddItem(order.OrderID, item);
-                }
+                //OrderItemsController itemsController = new OrderItemsController();
+                //foreach(OrderItem item in items)
+                //{
+                //    await itemsController.AddItem(order.OrderID, item);
+                //}
                 
                 return Created("", $"Order { order.OrderID } is created.");
             }
