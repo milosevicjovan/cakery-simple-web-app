@@ -35,6 +35,7 @@ namespace Cakery_Backend.Controllers
             using (Cakery_DbContext db = new Cakery_DbContext())
             {
                 var user = await db.Users.SingleOrDefaultAsync(u => u.Id.Equals(userId));
+                bool isAdmin = await IsAdmin(user.Id);
 
                 // This should never happen.
                 if (user == null)
@@ -48,7 +49,8 @@ namespace Cakery_Backend.Controllers
                     Username = user.UserName,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    Address = user.Address
+                    Address = user.Address,
+                    IsAdmin = isAdmin
                 };
 
                 return userDto;
