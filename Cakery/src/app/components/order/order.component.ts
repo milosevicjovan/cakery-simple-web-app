@@ -1,5 +1,8 @@
+import { OrderItem } from './../../models/order-item.model';
 import { OrdersDataService } from './../../services/orders.service';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Order } from 'src/app/models/order.model';
 
 @Component({
   selector: 'app-order',
@@ -8,21 +11,50 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class OrderComponent implements OnInit {
 
-  public cart: { productId: number, name: string, quantity: number, price: number, promotion: number }[] = [];
+  public isLoading = false;
 
-  constructor(private ordersDataService: OrdersDataService) { }
+  id: number;
+  private sub: any;
+
+  order: Order;
+  orderItems: OrderItem[];
+
+  constructor(private route: ActivatedRoute, private ordersDataService: OrdersDataService) { }
 
   ngOnInit(): void {
-    this.cart = this.ordersDataService.getCart();
-    console.log(this.cart);
+    this.isLoading = true;
+    this.sub = this.route.params.subscribe(params => {
+       this.id = +params['id']; 
+
+       this.getOrder().then(() => {
+         this.getOrderItems().then(() => {
+           this.isLoading = false;
+         })
+       })
+    });
   }
 
-  getCart() {
-    this.cart = this.ordersDataService.getCart();
+  async getOrder() {
+    await new Promise((resolve, _) => {
+      this.ordersDataService.getOrderById(this.id).subscribe(order => {
+        this.order = order;
+        resolve(order);
+      });
+    });
   }
 
-  getUserData() {
-    
+  async getOrderItems() {
+    await new Promise((resolve, _) => {
+      this.ordersDataService.getOrderItemsByOrderId(this.id).subscribe(orderItems => {
+        this.orderItems = orderItems;
+        resolve(orderItems);
+      })
+    })
+  }
+
+
+  ngOnDestroy() {
+    this.sub.unsubscribe();
   }
 
 }

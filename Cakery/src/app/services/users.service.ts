@@ -22,6 +22,8 @@ export class UsersDataService {
 
     private user: User;
 
+    private loginResponseCode: number;
+
     constructor(private http: HttpClient, private router: Router) {}
 
     getToken() {
@@ -81,13 +83,15 @@ export class UsersDataService {
                     const now = new Date();
                     const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
                     this.saveAuthData(token, expirationDate, this.username);
-                    this.router.navigate(['/products']);
                     resolve(this.user);
+                    this.router.navigate(['/products']);
                 }
-            }, error => {
-                this.authStatusListener.next(false);
-                console.log(error);
             });
+        }).then(() => {
+
+        }).catch(error => {
+            this.loginResponseCode = 400;
+            console.log("errrrror: ", error);
         });
     }
 

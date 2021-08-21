@@ -1,3 +1,10 @@
+<div class="d-flex justify-content-center">
+    <div class="spinner-border text-primary" style="width: 10rem; height: 10rem; border-width: 0.5rem; margin: 50px;" role="status"
+        *ngIf="isLoading">
+        <span class="sr-only"></span>
+    </div>
+</div>
+
 <div class="container-fluid" style="width: 90%; padding: 20px; margin-bottom: 30px;"
     *ngIf="isDataAvailable && !isLoading && userIsAuthenticated">
     <div class="row">
@@ -13,7 +20,8 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col">
-                                            <h3 class="card-title">{{ product.name }}</h3>
+                                            <h3 class="card-title" *ngIf="!user.isAdmin">{{ product.name }}</h3>
+                                            <a [routerLink]="['/product-details', product.productID]" *ngIf="user.isAdmin"><h3 class="card-title">{{ product.name }}</h3></a>
                                         </div>
                                         <div class="col" style="text-align: right;">
                                             <h3 class="card-text" *ngIf="product.promotion > 0"
@@ -43,7 +51,7 @@
                                         <div class="col" style="text-align: right;">
                                             <br>
                                             <button class="btn btn-primary btn-lg"
-                                                (click)="addToChart(product.productID, product.name, product.price, product.promotion)">
+                                                (click)="addToCart(product.productID, product.name, product.price, product.promotion)">
                                                 Add to cart</button>
                                         </div>
                                     </div>
@@ -58,6 +66,10 @@
             </div>
         </div>
         <div class="col-4" style="margin-bottom: 30px;">
+            <div class="alert alert-dismissible alert-success" *ngIf="isSent">
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <strong>Order has been sent successfully!</strong>
+            </div>
             <div class="card mb-3" style="max-width: 40rem;">
                 <div class="card-header text-lg-center">
                     <h4 class="card-title">Cart</h4>
@@ -84,7 +96,7 @@
                         <div class="col-3" style="text-align: right;">
                             <p class="card-text">
                                 <button class="btn btn-primary btn-sm" 
-                                (click)="removeFromChart(item.productId)"
+                                (click)="removeFromCart(item.productId)"
                                 style="width: 30px;">-</button>
                                 <strong>  {{ item.quantity }}x</strong></p>
                         </div>
@@ -96,13 +108,34 @@
                 </div>
                 <div class="card-footer">
                     <div class="row">
-                        <div class="col-7" style="text-align: left;">
-                            <a href="/order" class="btn btn-primary btn-sm">Send order</a>
+                        <div class="col-7">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" ([ngModel])="delivery" (change)="onDeliveryChange($event)">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                 Delivery
+                            </label>
                         </div>
                         <div class="col-5">
                             <h5 class="card-title" style="text-align: right; vertical-align: bottom;">
                                 <strong>Total: {{ (totalSum | number : '1.0-0') }}</strong>
                             </h5>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 20px;">
+                        <div class="col-8">
+                            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                                <input type="radio" class="btn-check" name="btnradio" id="radioCash" 
+                                    autocomplete="off" checked="" value="CASH" (change)="onCash($event)">
+                                <label class="btn btn-outline-primary" for="radioCash">CASH</label>
+                                <input type="radio" class="btn-check" name="btnradio" id="radioCard" 
+                                    autocomplete="off" checked="" value="CARD" (change)="onCash($event)">
+                                <label class="btn btn-outline-primary" for="radioCard">CARD</label>
+                                <input type="radio" class="btn-check" name="btnradio" id="radioInvoice" 
+                                    autocomplete="off" checked="" value="INVOICE" (change)="onCash($event)">
+                                <label class="btn btn-outline-primary" for="radioInvoice">INVOICE</label>
+                              </div>
+                        </div>
+                        <div class="col-4" style="text-align: right;">
+                            <button class="btn btn-primary" *ngIf="cart.length>0" (click)="sendOrder()">Send order</button>
                         </div>
                     </div>
                 </div>
@@ -112,7 +145,7 @@
 </div>
 
 <!--Entirely new container and visually different when user is not authenticated-->
-<div class="container" style="padding: 20px; margin-bottom: 30px" *ngIf="!userIsAuthenticated">
+<div class="container" style="padding: 20px; margin-bottom: 30px" *ngIf="!userIsAuthenticated && !isLoading">
     <div class="col-12" style="display: flex; flex-direction: column; justify-content: center;">
         <div class="row" *ngFor="let product of products">
             <div class="col">

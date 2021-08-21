@@ -1,89 +1,109 @@
-<div class="container" style="padding: 20px; margin-bottom: 30px; margin-top: 30px; border: solid; border-radius: 10px;">
-    <div class="row">
-        <div class="col-3" style="border: solid; border-width: 1px;"></div>
-        <div class="col-2" style="border: solid; border-width: 1px;">
-            <h5>Username: </h5>
-        </div>
-        <div class="col-4" style="border: solid; border-width: 1px;">
-            <h5>jovan@cake.com</h5>
-        </div>
-        <div class="col-3" style="border: solid; border-width: 1px;"></div>
-    </div>
-    <div class="row">
-        <div class="col-3" style="border: solid; border-width: 1px;"></div>
-        <div class="col-2" style="border: solid; border-width: 1px;">
-            <h5>Name: </h5>
-        </div>
-        <div class="col-4" style="border: solid; border-width: 1px;">
-            <h5>Jovan Milosevic</h5>
-        </div>
-        <div class="col-3" style="border: solid; border-width: 1px;"></div>
-    </div>
-    <div class="row">
-        <div class="col-3" style="border: solid; border-width: 1px;"></div>
-        <div class="col-2" style="border: solid; border-width: 1px;">
-            <h5>Address: </h5>
-        </div>
-        <div class="col-4" style="border: solid; border-width: 1px;">
-            <h5>Kolo Srpskih Sestara 5, Novi Sad</h5>
-        </div>
-        <div class="col-3" style="border: solid; border-width: 1px; text-align: right;">
-            <button class="btn btn-primary btn-sm">Confirm Order</button>
-        </div>
+<div class="d-flex justify-content-center">
+    <div class="spinner-border text-primary" style="width: 10rem; height: 10rem; border-width: 0.5rem; margin: 50px;" role="status"
+        *ngIf="isLoading">
+        <span class="sr-only"></span>
     </div>
 </div>
 
-<div class="container border-primary">
-    <div class="d-flex justify-content-between">
-        <div class="p-2">
-            <h6>No:</h6>
+<div class="container">
+    <div class="container" *ngIf="!isLoading" style="padding: 20px; margin-bottom: 30px; margin-top: 30px; border: solid; border-radius: 10px;">
+        <div class="row">
+            <div class="col-2">
+                <h5>Username: </h5>
+            </div>
+            <div class="col-4">
+                <h5><strong>{{ order.username }}</strong></h5>
+            </div>
+            <div class="col-2">
+                <h5>Time: </h5>
+            </div>
+            <div class="col-4">
+                <h5><strong>{{ order.time }}</strong></h5>
+            </div>
         </div>
-        <div class="p-2">
-            <h6>Product ID:</h6>
+        <div class="row">
+            <div class="col-2">
+                <h5>Name: </h5>
+            </div>
+            <div class="col-4">
+                <h5><strong>{{ order.firstName }} {{ order.lastName }}</strong></h5>
+            </div>
+            <div class="col-2">
+                <h5>Delivery: </h5>
+            </div>
+            <div class="col-4">
+                <h5><strong>{{ order.delivery }}</strong></h5>
+            </div>
         </div>
-        <div class="p-2">
-            <h6>Product Name:</h6>
-        </div>
-        <div class="p-2">
-            <h6>Quantity:</h6>
-        </div>
-        <div class="p-2">
-            <h6>Price:</h6>
-        </div>
-        <div class="p-2">
-            <h6>Promotion:</h6>
-        </div>
-        <div class="p-2">
-            <h6>Price with promotion:</h6>
-        </div>
-        <div class="p-2">
-            <h6>Sum:</h6>
-        </div>
-    </div>
-    <div class="d-flex justify-content-between" *ngFor="let item of cart">
-        <div class="p-2">
-            <h6></h6>
-        </div>
-        <div class="p-2">
-            <h6>{{ item.productId }}</h6>
-        </div>
-        <div class="p-2">
-            <h6>{{ item.name }}</h6>
-        </div>
-        <div class="p-2">
-            <h6>{{ item.quantity }}</h6>
-        </div>
-        <div class="p-2">
-            <h6>{{ item.price }}</h6>
-        </div>
-        <div class="p-2">
-            <h6>{{ item.promotion }}</h6>
-        </div>
-        <div class="p-2">
-            <h6>{{ item.price - (item.price * (item.promotion / 100)) }}</h6>
-        </div>
-        <div class="p-2">
-            <h6>{{ item.quantity * (item.price - (item.price * (item.promotion / 100))) }}</h6>
+        <div class="row">
+            <div class="col-2">
+                <h5>Address: </h5>
+            </div>
+            <div class="col-4">
+                <h5><strong>{{ order.address }}</strong></h5>
+            </div>
+            <div class="col-2">
+                <h5>Payment Method: </h5>
+            </div>
+            <div class="col-4">
+                <h5><strong>{{ order.paymentMethod }}</strong></h5>
+            </div>
         </div>
     </div>
+    <hr>
+    <div class="container border-primary" *ngIf="!isLoading">
+        <div class="d-flex justify-content-between">
+            <div class="p-2">
+                <h6>No:</h6>
+            </div>
+            <div class="p-2">
+                <h6>Product ID:</h6>
+            </div>
+            <div class="p-2">
+                <h6>Product Name:</h6>
+            </div>
+            <div class="p-2">
+                <h6>Quantity:</h6>
+            </div>
+            <div class="p-2">
+                <h6>Price:</h6>
+            </div>
+            <div class="p-2">
+                <h6>Promotion:</h6>
+            </div>
+            <div class="p-2">
+                <h6>Price with promotion:</h6>
+            </div>
+            <div class="p-2">
+                <h6>Sum:</h6>
+            </div>
+        </div>
+        <div class="d-flex justify-content-between" *ngFor="let item of orderItems">
+            <div class="p-2">
+                <h6>{{ orderItems.indexOf(item) + 1 }}</h6>
+            </div>
+            <div class="p-2">
+                <h6>{{ item.productID }}</h6>
+            </div>
+            <div class="p-2">
+                <h6>{{ item.name }}</h6>
+            </div>
+            <div class="p-2">
+                <h6>{{ item.quantity }}</h6>
+            </div>
+            <div class="p-2">
+                <h6>{{ item.price }}</h6>
+            </div>
+            <div class="p-2">
+                <h6>{{ item.promotion }}</h6>
+            </div>
+            <div class="p-2">
+                <h6>{{ item.price - (item.price * (item.promotion / 100)) }}</h6>
+            </div>
+            <div class="p-2">
+                <h6>{{ item.sum }}</h6>
+            </div>
+        </div>
+    </div>
+    
 </div>

@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { NgForm } from '@angular/forms';
 import { User } from 'src/app/models/user.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -19,6 +20,8 @@ export class LoginComponent implements OnInit {
 
   public loggedUser: User;
 
+  public error: boolean = false;
+
   constructor(private usersDataService: UsersDataService) { }
 
   ngOnInit(): void {
@@ -29,21 +32,13 @@ export class LoginComponent implements OnInit {
     );
   }
 
-  onClick() {
-    console.log(this.username);
-  }
-
   async onLogin() {
-    await new Promise((resolve, _) => {
-      this.usersDataService.login(this.username, this.password)
-    }).then((response) => {
-      console.log("Success: ");
-      console.log(response);
-      console.log(this.loggedUser);
-    }).catch((error) => {
-      console.log("Error: ");
-      console.log(error);
-    })
+    this.isLoading = true;
+    this.usersDataService.login(this.username, this.password).then(() => {
+      this.getCurrentUser().then(() => {
+        this.isLoading = false;
+      });
+    });
   }
 
   async getCurrentUser() {

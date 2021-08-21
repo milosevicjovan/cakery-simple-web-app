@@ -1,1 +1,31 @@
-<p>orders works!</p>
+<div class="d-flex justify-content-center">
+    <div class="spinner-border text-primary" style="width: 10rem; height: 10rem; border-width: 0.5rem; margin: 50px;" role="status"
+        *ngIf="isLoading">
+        <span class="sr-only"></span>
+    </div>
+</div>
+
+<div class="container" style="margin-top: 30px;">
+    <table *ngIf="!isLoading" class="table" style="border: solid; border-width: 0.5px; border-radius: 5px; border-color: black;">
+        <thead class="table-primary">
+            <tr>
+              <th scope="col">Order ID</th>
+              <th scope="col">Name</th>
+              <th scope="col">Address</th>
+              <th scope="col">Time</th>
+              <th scope="col">Delivery</th>
+              <th scope="col">Payment Method</th>
+              <th scope="col">Total</th>
+            </tr>
+        </thead>
+        <tbody *ngFor="let order of orders">
+            <td><a [routerLink]="['/order-details', order.orderID]">{{ order.orderID }}</a></td>
+            <td>{{ order.firstName }} {{ order.lastName }}</td>
+            <td>{{ order.address }}</td>
+            <td>{{ order.time }}</td>
+            <td>{{ order.delivery }}</td>
+            <td>{{ order.paymentMethod }}</td>
+            <td><strong>{{ order.sum | number : '1.2-2' }}</strong></td>
+        </tbody>
+    </table>
+</div>

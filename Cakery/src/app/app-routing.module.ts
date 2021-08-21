@@ -1,3 +1,4 @@
+import { ProductComponent } from './components/product/product.component';
 import { RegisterComponent } from './components/register/register.component';
 import { LoginComponent } from './components/login/login.component';
 import { CartComponent } from './components/cart/cart.component';
@@ -17,11 +18,14 @@ const routes: Routes = [
     path: 'products',
     component: ProductsComponent
   }, {
+    path: 'product-details/:id',
+    component: ProductComponent
+  }, {
     path: 'orders',
     component: OrdersComponent,
     canActivate: [AuthGuard]
   }, {
-    path: 'order',
+    path: 'order-details/:id',
     component: OrderComponent,
     canActivate: [AuthGuard]
   }, {

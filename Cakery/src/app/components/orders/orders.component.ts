@@ -1,4 +1,6 @@
+import { OrdersDataService } from './../../services/orders.service';
 import { Component, OnInit } from '@angular/core';
+import { Order } from 'src/app/models/order.model';
 
 @Component({
   selector: 'app-orders',
@@ -7,9 +9,26 @@ import { Component, OnInit } from '@angular/core';
 })
 export class OrdersComponent implements OnInit {
 
-  constructor() { }
+  public isLoading = false;
+
+  orders: Order[];
+
+  constructor(private ordersDataService: OrdersDataService) { }
 
   ngOnInit(): void {
+    this.isLoading = true;
+    this.getOrders().then(() => {
+      this.isLoading = false;
+    })
+  }
+
+  async getOrders() {
+    await new Promise((resolve, _) => {
+      this.ordersDataService.getOrders().subscribe(orders => {
+        this.orders = orders;
+        resolve(orders);
+      });
+    });
   }
 
 }

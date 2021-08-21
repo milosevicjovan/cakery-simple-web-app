@@ -6,6 +6,7 @@ import { Product } from 'src/app/models/product.model';
 import { OrderItem } from 'src/app/models/order-item.model';
 import { Subscription } from 'rxjs';
 import { User } from 'src/app/models/user.model';
+import { Order } from 'src/app/models/order.model';
 
 @Component({
   selector: 'app-products',
@@ -25,29 +26,34 @@ export class ProductsComponent implements OnInit {
 
   public user: User;
 
+  public isSent: boolean = false;
+
   userIsAuthenticated = false;
   private authListenerSubs: Subscription;
   
+  delivery: string = "PICKUP";
+  paymentMethod: string = "INVOICE"
+
   constructor(private productsDataService: ProductsDataService, 
               private usersDataService: UsersDataService, 
               private ordersDataService: OrdersDataService) { }
 
   ngOnInit(): void {
+    this.isSent = false;
     this.userIsAuthenticated = this.usersDataService.getIsAuth();
     this.authListenerSubs = this.usersDataService.getAuthStatusListener()
         .subscribe(isAuthenticated => {
           this.userIsAuthenticated = isAuthenticated;
         });
     this.getProducts().then(() => {
-      this.getCurrentUser().then(() => {
-        if (this.products.length > 0) {
-          this.isLoading = false;
-          this.isDataAvailable = true;
-        } else {
-          this.isLoading = false;
-          this.isDataAvailable = false;
-        }
-      }); 
+      this.getCurrentUser() ;
+      if (this.products.length > 0) {
+        this.isLoading = false;
+        this.isDataAvailable = true;
+      } else {
+        this.isLoading = false;
+        this.isDataAvailable = false;
+      }
     });
   }
 
@@ -65,24 +71,67 @@ export class ProductsComponent implements OnInit {
     await new Promise((resolve, _) => {
       this.usersDataService.getCurrentUser().subscribe(user => {
         this.user = user;
+        console.log(this.user);
         resolve(user);
       });
     });
   }
 
-  addToChart(productID: number, name: string, price: number, promotion: number) {
-    this.ordersDataService.addToChart(productID, name, price, promotion);
+  async sendOrder() {
+    await new Promise(async (resolve, _) => {
+
+      const orderItems: { productId: number, quantity: number }[] = [];
+
+      this.cart.forEach(item => {
+        orderItems.push({ productId: item.productId, quantity: item.quantity });
+      })
+
+      const order = {
+        userId: this.user.userID,
+        delivery: this.delivery,
+        paymentMethod: this.paymentMethod,
+        orderItems: orderItems
+      };
+
+      console.log("Order: ", order);
+      console.log("Stringified: ", JSON.stringify(order));
+
+      this.ordersDataService.addOrder(order);
+
+      resolve(order);
+    }).then(() => {
+      this.isSent = true;
+      this.cart = [];
+      this.ordersDataService.deleteFromCart();
+      this.totalSum = this.ordersDataService.getTotalSum();
+
+    }).catch(error => {
+      console.log("Error: ", error);
+    })
+  }
+
+  addToCart(productID: number, name: string, price: number, promotion: number) {
+    this.ordersDataService.addToCart(productID, name, price, promotion);
     this.cart = this.ordersDataService.getCart();
     this.totalSum = this.ordersDataService.getTotalSum();
   }
 
-  removeFromChart(productID: number) {
-    this.ordersDataService.removeFromChart(productID);
+  removeFromCart(productID: number) {
+    this.ordersDataService.removeFromCart(productID);
     this.cart = this.ordersDataService.getCart();
     this.totalSum = this.ordersDataService.getTotalSum();
   }
 
   ngOnDestroy() {
     this.authListenerSubs.unsubscribe();
+  }
+
+  onCash(obj: any) {
+    this.paymentMethod = obj.target.defaultValue;
+  }
+
+  onDeliveryChange(obj: any) {
+    let state: boolean = obj.target.checked;
+    this.delivery = state ? "DELIVERY" : "PICKUP";
   }
 }
