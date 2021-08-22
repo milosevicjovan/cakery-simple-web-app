@@ -1,8 +1,10 @@
 import { OrderItem } from './../models/order-item.model';
 import { Order } from './../models/order.model';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { environment } from './../../environments/environment';
+import { throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators'
 
 const api = environment.serviceApi;
 
@@ -18,11 +20,15 @@ export class OrdersDataService {
   }
 
   getOrderById(orderId: number) {
-    return this.http.get<Order>(api + "orders/" + orderId);
+    return this.http.get<Order>(api + "orders/" + orderId).pipe(catchError(this.handleError));
+  }
+
+  handleError(error: HttpErrorResponse) {
+    return throwError(error);
   }
 
   getOrderItemsByOrderId(orderId: number) {
-    return this.http.get<OrderItem[]>(api + "orders/items/" + orderId);
+    return this.http.get<OrderItem[]>(api + "orders/items/" + orderId).pipe(catchError(this.handleError));
   }
 
   getLatestOrderByCurrentUser() {

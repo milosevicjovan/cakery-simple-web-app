@@ -5,8 +5,17 @@
     </div>
 </div>
 
+<div class="container" style="padding: 20px; margin-bottom: 30px; margin-top: 30px;">
+    <div class="alert alert-dismissible alert-danger" *ngIf="!isLoading && !isDataAvailable">
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <strong>There's no data found for order where order ID is {{ id }}.</strong>
+        <hr>
+        <p>Original error: </p><strong>{{ errorMessage }}</strong>
+      </div>
+</div>
+
 <div class="container">
-    <div class="container" *ngIf="!isLoading" style="padding: 20px; margin-bottom: 30px; margin-top: 30px; border: solid; border-radius: 10px;">
+    <div class="container" *ngIf="!isLoading && isDataAvailable" style="padding: 20px; margin-bottom: 30px; margin-top: 30px; border: solid; border-radius: 10px;">
         <div class="row">
             <div class="col-2">
                 <h5>Username: </h5>
@@ -50,8 +59,9 @@
             </div>
         </div>
     </div>
-    <hr>
-    <div class="container border-primary" *ngIf="!isLoading">
+
+    <div class="container border-primary" *ngIf="!isLoading && isDataAvailable">
+        <hr>
         <div class="d-flex justify-content-between">
             <div class="p-2">
                 <h6>No:</h6>
