@@ -20,7 +20,7 @@ export class OrderComponent implements OnInit {
   order: Order;
   orderItems: OrderItem[];
 
-  public errorMessage: string;
+  public error: any;
 
   constructor(private route: ActivatedRoute, private ordersDataService: OrdersDataService) { }
 
@@ -44,7 +44,7 @@ export class OrderComponent implements OnInit {
         this.order = order;
         resolve(order);
       }, error => {
-        this.errorMessage = error.error.message;
+        this.error = error;
         this.isDataAvailable = false;
         this.isLoading = false;
         console.log("Error: ", error);

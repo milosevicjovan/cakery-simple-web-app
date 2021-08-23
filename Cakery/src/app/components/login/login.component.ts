@@ -20,7 +20,7 @@ export class LoginComponent implements OnInit {
 
   public loggedUser: User;
 
-  public error: boolean = false;
+  public hasError: boolean = false;
 
   constructor(private usersDataService: UsersDataService) { }
 
@@ -38,6 +38,9 @@ export class LoginComponent implements OnInit {
       this.getCurrentUser().then(() => {
         this.isLoading = false;
       });
+    }).catch(error => {
+      this.hasError = true;
+      this.isLoading = false;
     });
   }
 

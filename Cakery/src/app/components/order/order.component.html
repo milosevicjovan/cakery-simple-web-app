@@ -10,7 +10,10 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         <strong>There's no data found for order where order ID is {{ id }}.</strong>
         <hr>
-        <p>Original error: </p><strong>{{ errorMessage }}</strong>
+        <p>Original error: </p>
+        <span>Status: <strong>{{ error.status }}, {{ error.statusText }}</strong></span>
+        <br>
+        <span>Message: <strong>{{ error.error.message }}</strong></span>
       </div>
 </div>
 

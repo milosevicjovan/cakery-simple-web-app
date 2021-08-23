@@ -1,11 +1,12 @@
 import { NewUser } from './../models/new-user.model';
 
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { User } from '../models/user.model';
 import { environment } from 'src/environments/environment';
-import { Subject } from 'rxjs';
+import { Subject, throwError } from 'rxjs';
 import { Router } from '@angular/router';
+import { catchError } from 'rxjs/operators';
 
 const api = environment.serviceApi;
 const loginApi = environment.loginApi;
@@ -21,8 +22,6 @@ export class UsersDataService {
     private tokenTimer: any;
 
     private user: User;
-
-    private loginResponseCode: number;
 
     constructor(private http: HttpClient, private router: Router) {}
 
@@ -67,11 +66,16 @@ export class UsersDataService {
         })
     }
 
+    handleError(error: HttpErrorResponse) {
+        return throwError(error);
+      }
+
     async login(username: string, password: string) {
         const authData = "username=" + username + "&password=" + password + "&grant_type=password";
-        await new Promise((resolve, _) => {
-            this.http.post<{ access_token: string, expires_in: number; userName: string }>
-            (loginApi, authData).subscribe(response => {
+        await new Promise((resolve, reject) => {
+            const observable = this.http.post<{ access_token: string, expires_in: number; userName: string }>
+            (loginApi, authData).pipe(catchError(this.handleError));
+            observable.subscribe(response => {
                 const token = response.access_token;
                 this.token = token;
                 if (token) {
@@ -86,12 +90,10 @@ export class UsersDataService {
                     resolve(this.user);
                     this.router.navigate(['/products']);
                 }
+            }, error => {
+                console.log("Error: ", error);
+                reject(error);
             });
-        }).then(() => {
-
-        }).catch(error => {
-            this.loginResponseCode = 400;
-            console.log("errrrror: ", error);
         });
     }
 
