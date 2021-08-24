@@ -1,6 +1,6 @@
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -16,6 +16,10 @@ import { AuthGuard } from './auth/auth.guard';
 import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from './components/header/header.component';
 import { ProductComponent } from './components/product/product.component';
+
+import { registerLocaleData } from '@angular/common';
+import localeSr from '@angular/common/locales/sr';
+registerLocaleData(localeSr);
 
 @NgModule({
   declarations: [
@@ -43,7 +47,8 @@ import { ProductComponent } from './components/product/product.component';
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
-    }
+    },
+    { provide: LOCALE_ID, useValue: 'sr-RS'}
   ],
   bootstrap: [AppComponent]
 })
