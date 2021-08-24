@@ -22,6 +22,8 @@ export class LoginComponent implements OnInit {
 
   public hasError: boolean = false;
 
+  public error: any;
+
   constructor(private usersDataService: UsersDataService) { }
 
   ngOnInit(): void {
@@ -39,6 +41,7 @@ export class LoginComponent implements OnInit {
         this.isLoading = false;
       });
     }).catch(error => {
+      this.error = error;
       this.hasError = true;
       this.isLoading = false;
     });
