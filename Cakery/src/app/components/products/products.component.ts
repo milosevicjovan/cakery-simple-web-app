@@ -46,15 +46,20 @@ export class ProductsComponent implements OnInit {
           this.userIsAuthenticated = isAuthenticated;
         });
     this.getProducts().then(() => {
-      this.getCurrentUser().then(user => {
-        if (this.products.length > 0) {
-          this.isLoading = false;
-          this.isDataAvailable = true;
-        } else {
-          this.isLoading = false;
-          this.isDataAvailable = false;
-        }
-      })
+      if (this.userIsAuthenticated) {
+        this.getCurrentUser().then(user => {
+          if (this.products.length > 0) {
+            this.isLoading = false;
+            this.isDataAvailable = true;
+          } else {
+            this.isLoading = false;
+            this.isDataAvailable = false;
+          }
+        })
+      } else {
+        this.isDataAvailable = true;
+        this.isLoading = false;
+      }
     }).catch(error => {
       this.isDataAvailable = false;
       this.isLoading = false;
