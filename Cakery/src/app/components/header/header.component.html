@@ -18,14 +18,13 @@
             <a class="nav-link" [routerLink]="['/orders']">Orders</a>
           </li>
           <li class="nav-item" *ngIf="userIsAuthenticated">
-            <a id="about-us" class="nav-link" (click)="logOut()">Log Out <i
-                class="fas fa-info-circle"></i></a>
+            <a id="about-us" class="nav-link" (click)="logOut()">Log Out </a>
           </li>
           <li class="nav-item" *ngIf="!userIsAuthenticated">
-            <a id="about-us" class="nav-link" [routerLink]="['/register']">Register <i class="fas fa-info-circle"></i></a>
+            <a id="about-us" class="nav-link" [routerLink]="['/register']">Register </a>
           </li>
           <li class="nav-item" *ngIf="!userIsAuthenticated">
-            <a id="about-us" class="nav-link" [routerLink]="['/login']">Log In <i class="fas fa-info-circle"></i></a>
+            <a id="about-us" class="nav-link" [routerLink]="['/login']">Log In </a>
           </li>
           <!-- <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Jovan Milosevic</a>

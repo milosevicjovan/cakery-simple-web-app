@@ -121,7 +121,6 @@ export class UsersDataService {
         this.authStatusListener.next(false);
         this.username = null;
         clearTimeout(this.tokenTimer);
-        this.http.post(api + "account/logout", "");
         this.clearAuthData();
         this.router.navigate(['/login']);
     }
