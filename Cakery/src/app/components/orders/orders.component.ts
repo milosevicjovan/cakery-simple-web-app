@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { OrdersDataService } from './../../services/orders.service';
 import { Component, OnInit } from '@angular/core';
 import { Order } from 'src/app/models/order.model';
@@ -13,11 +14,16 @@ export class OrdersComponent implements OnInit {
 
   orders: Order[];
 
-  constructor(private ordersDataService: OrdersDataService) { }
+  public totalSum: number = 0;
+
+  constructor(private ordersDataService: OrdersDataService, private router: Router) { }
 
   ngOnInit(): void {
     this.isLoading = true;
     this.getOrders().then(() => {
+      if (this.orders.length > 0) {
+        this.getTotalSum();
+      }
       this.isLoading = false;
     })
   }
@@ -31,4 +37,13 @@ export class OrdersComponent implements OnInit {
     });
   }
 
+  getTotalSum() {
+    this.orders.forEach(order => {
+      this.totalSum += order.sum;
+    })
+  }
+
+  onClick(id: number) {
+    this.router.navigate(['/order-details', id]);
+  }
 }

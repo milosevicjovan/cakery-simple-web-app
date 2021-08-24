@@ -8,16 +8,24 @@
 </div>
 
 <div class="container" style="margin-top: 30px; margin-bottom: 80px;">
+    <div class="row text-dark" style="padding: 5px;" *ngIf="!isLoading">
+        <div class="col">
+            <h4>Total count: <strong>{{ orders.length }}</strong></h4>
+        </div>
+        <div class="col" style="text-align: right;">
+            <h4>Total sum: <strong>{{ totalSum | number : '1.2-2' : 'sr' }}</strong></h4>
+        </div>
+    </div>
     <div class="row" *ngFor="let order of orders; index as i" style="padding: 5px;">
         <div class="col">
-            <div class="{{ ((i+1) % 2 == 0) ? 'card text-dark' : 'card bg-light text-dark' }}">
+            <div class="{{ ((i+1) % 2 == 0) ? 'card text-dark' : 'card bg-light text-dark' }}" (click)="onClick(order.orderID)">
                 <div class="card-header">
                     <div class="row">
                         <div class="col">
                             <h5>Order ID: <strong>{{ order.orderID }}</strong></h5>
                         </div>
                         <div class="col" style="text-align: right;">
-                            <h5>Time: <strong>{{ order.time | date:'dd/MM/yyyy HH:mm:ss' }}</strong></h5>
+                            <h5><i class="far fa-clock"></i> Time: <strong>{{ order.time | date:'dd/MM/yyyy HH:mm:ss' }}</strong></h5>
                         </div>
                     </div>
                 </div>
@@ -25,7 +33,7 @@
                     <div class="row">
                         <div class="col-3">
                             <div class="row">
-                                <h6>Name:</h6>
+                                <h6><i class="fas fa-user"></i> Name:</h6>
                             </div>
                             <div class="row">
                                 <h5><strong>{{ order.firstName }} {{ order.lastName }}</strong></h5>
@@ -33,7 +41,7 @@
                         </div>
                         <div class="col-3">
                             <div class="row">
-                                <h6>Address:</h6>
+                                <h6><i class="fas fa-map-marker-alt"></i> Address:</h6>
                             </div>
                             <div class="row">
                                 <h5><strong>{{ order.address }}</strong></h5>
@@ -41,18 +49,25 @@
                         </div>
                         <div class="col-2" style="text-align: center;">
                             <div class="row">
-                                <h6>Delivery method:</h6>
+                                <h6><i class="fas fa-question"></i> Delivery method:</h6>
                             </div>
                             <div class="row">
-                                <h5><strong>{{ order.delivery }}</strong></h5>
+                                    <h5><strong>{{ order.delivery }} </strong>
+                                        <i *ngIf="order.delivery=='DELIVERY'" class="fas fa-truck"></i>
+                                        <i *ngIf="order.delivery=='PICKUP'" class="fas fa-store"></i>
+                                    </h5>
                             </div>
                         </div>
                         <div class="col-2" style="text-align: center;">
                             <div class="row">
-                                <h6>Payment method:</h6>
+                                <h6><i class="fas fa-dollar-sign"></i> Payment method:</h6>
                             </div>
                             <div class="row">
-                                <h5><strong>{{ order.paymentMethod }}</strong></h5>
+                                <h5><strong>{{ order.paymentMethod }} </strong>
+                                    <i *ngIf="order.paymentMethod=='CARD'" class="far fa-credit-card"></i>
+                                    <i *ngIf="order.paymentMethod=='CASH'" class="far fa-money-bill-alt"></i>
+                                    <i *ngIf="order.paymentMethod=='INVOICE'" class="fas fa-file-invoice"></i>
+                                </h5>
                             </div>
                         </div>
                         <div class="col-2 text-primary" style="text-align: right;">
@@ -68,7 +83,7 @@
                 <div class="card-footer">
                     <div class="row">
                         <div class="col">
-                            <a class="btn btn-primary" [routerLink]="['/order-details', order.orderID]">Details</a>
+                            <a class="btn btn-primary" [routerLink]="['/order-details', order.orderID]">Details <i class="fas fa-info-circle"></i></a>
                         </div>
                     </div>
                 </div>
