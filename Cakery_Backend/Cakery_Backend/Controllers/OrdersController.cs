@@ -37,14 +37,16 @@ namespace Cakery_Backend.Controllers
 
                 if (order == null)
                 {
-                    return BadRequest($"Product with ID={ id } was not found!");
+                    return BadRequest($"Order with ID={ id } was not found!");
                 }
+
+                order.OrderItems = await db.OrderItems.Where(oi => oi.OrderID == id).ToListAsync();
 
                 db.Orders.Remove(order);
 
                 await db.SaveChangesAsync();
 
-                return Ok($"Product { order.OrderID } is deleted.");
+                return Ok($"Order { order.OrderID } has been deleted.");
             }
         }
 
@@ -189,16 +191,8 @@ namespace Cakery_Backend.Controllers
 
                 db.Orders.Add(order);
                 await db.SaveChangesAsync();
-
-                //var items = order.OrderItems;
-
-                //OrderItemsController itemsController = new OrderItemsController();
-                //foreach(OrderItem item in items)
-                //{
-                //    await itemsController.AddItem(order.OrderID, item);
-                //}
                 
-                return Created("", $"Order { order.OrderID } is created.");
+                return Created("", $"Order { order.OrderID } has been created successfully.");
             }
         }
 

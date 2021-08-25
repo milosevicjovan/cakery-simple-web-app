@@ -111,7 +111,7 @@ namespace Cakery_Backend.Controllers
                         Price = Math.Round(product.Price, 2),
                         Promotion = Math.Round(product.Promotion, 2),
                         Quantity = Math.Round(item.Quantity, 2),
-                        Sum = Math.Round((item.Quantity * (product.Price - (product.Price * (product.Promotion / 100)))))
+                        Sum = Math.Round((item.Quantity * (product.Price - (product.Price * (product.Promotion / 100)))), 2)
                     });
                 }
 
