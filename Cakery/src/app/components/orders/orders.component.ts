@@ -46,4 +46,14 @@ export class OrdersComponent implements OnInit {
   onClick(id: number) {
     this.router.navigate(['/order-details', id]);
   }
+
+  onDelete(id: number) {
+    this.ordersDataService.deleteOrder(id).subscribe(response => {
+      console.log("Resp:", response);
+      this.ngOnInit();
+    }, error => {
+      console.log("Err", error);
+      this.ngOnInit();
+    })
+  }
 }

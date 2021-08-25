@@ -67,13 +67,13 @@ export class OrdersDataService {
       headers: new HttpHeaders(headerDict)
     };
 
-    this.http.post(api + "orders", JSON.stringify(order),
-      requestOptions).subscribe(() => { });
+    return this.http.post(api + "orders", JSON.stringify(order),
+      requestOptions).pipe(catchError(this.handleError));
   }
 
-  // Maybe will not be used
+
   deleteOrder(orderId: number) {
-    this.http.delete(api + "orders/" + orderId);
+    return this.http.delete(api + "orders/" + orderId).pipe(catchError(this.handleError));
   }
 
   addToCart(productID: number, name: string, price: number, promotion: number) {
