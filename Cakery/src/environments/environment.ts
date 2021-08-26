@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
   serviceApi: "http://localhost:9072/api/",
-  loginApi: "http://localhost:9072/Token"
+  loginApi: "http://localhost:9072/Token",
+  imageApi: "http://localhost:9072/Images/"
 };
 
 /*

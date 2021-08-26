@@ -1,1 +1,87 @@
-<h1>displaying info for id = {{ id }}</h1>
+<div *ngIf="isLoading" class="text-center">
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border text-primary" style="width: 10rem; height: 10rem; border-width: 0.5rem; margin: 50px;" role="status">
+            <span class="sr-only"></span>
+        </div>
+    </div>
+    <h4>Loading...</h4>
+</div>
+
+<div class="container border-dark" 
+    style="margin-top: 30px; margin-bottom: 30px; padding: 20px; border: solid; border-width: 0.5px; border-radius: 10px; box-shadow: 5px 10px rgba(136, 136, 136, 0.493);">
+    <form #imageForm=ngForm class="row">
+        <div class="col-8">
+            <div style="width: 70%;" class="alert alert-dismissible alert-success" *ngIf="isUpdated">
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <strong>Product has been successfully updated.</strong>
+            </div>
+            <form>
+                <div class="form" *ngIf="!isLoading && isDataAvailable" style="width: 70%;">
+                    <div class="row">
+                        <div class="col">
+                            <button class="btn btn-primary" type="submit" (click)="onSave(Image)" [disabled]="product.imagePath=='' || !imageForm.valid">Save <i class="fas fa-save"></i></button>
+                        </div>
+                        <div class="col" style="text-align: right;">
+                            <button class="btn btn-warning">Delete <i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="form-group">
+                        <label class="col-form-label mt-4" for="name" style="margin-left: 10px;"><strong><i class="fas fa-file-signature"></i></strong> Product
+                            Name:</label>
+                        <input type="text" id="name" class="form-control" name="name" placeholder="Product Name" [(ngModel)]="product.name">
+                    </div>
+                    <div class="form-group">
+                        <label for="description" class="form-label mt-4" style="margin-left: 10px;"><strong><i class="fas fa-pencil-alt"></i></strong> Product
+                            Description:</label>
+                        <textarea class="form-control" id="description" name="description" rows="5"
+                            placeholder="Description" [(ngModel)]="product.description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col">
+                                <label class="col-form-label mt-4" for="promotion"
+                                    style="margin-left: 10px;"><strong><i class="fas fa-percent"></i></strong> Promotion:</label>
+                                <input class="form-control" placeholder="Promotion" id="promotion" name="promotion" [(ngModel)]="product.promotion" step="0.01">
+                            </div>
+                            <div class="col" style="text-align: right;">
+                                <label class="col-form-label mt-4" for="price" style="margin-right: 10px;"><strong><i class="fas fa-dollar-sign"></i></strong> Price:</label>
+                                <input type="text" style="text-align:right;" class="form-control" placeholder="Price"
+                                    id="price" name="price" [(ngModel)]="product.price">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-4">
+            <div class="form-group">
+                <input #Image class="form-control" type="file" id="image" (change)="handleFileInput($event)">
+                <div class="row" *ngIf="imgPreview" style="margin: 10px 10px">
+                    <div class="col align-self-center"><span>Image preview: </span></div>
+                    <div class="col">
+                        <label for="image">
+                            <img [src]="imgPreview" height="80px"/>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="col" style="align-self: center;">
+                <img *ngIf="product" [src]="getImage(product.imagePath)" class="card-img" alt="product.name">
+            </div>
+                <div class="row" style="text-align: right; padding: 10px;">
+                    <button *ngIf="product" [disabled]="product.imagePath == 'no-image.png'" (click)="onRemoveImage()" class="btn btn-primary">Remove picture</button>
+                </div>
+        </div>
+    </form>
+</div>
+
+<!-- <div class="container" *ngIf="!isLoading && isDataAvailable">
+    <form #imageForm=ngForm (ngSubmit)="OnSubmit(Image)">
+        <div class="image-upload">
+            <input id="file-input" #Image type="file" (change)="handleFileInput($event)"/>
+            <button type="submit" class="btn-large btn-submit" [disabled]="Image.value=='' || !imageForm.valid"><i class=" btn btn-primary">save</i></button>
+        </div>
+    </form>
+</div> -->

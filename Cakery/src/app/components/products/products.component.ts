@@ -1,12 +1,11 @@
+import { environment } from 'src/environments/environment';
 import { OrdersDataService } from './../../services/orders.service';
 import { UsersDataService } from './../../services/users.service';
 import { ProductsDataService } from './../../services/products.service';
 import { Component, OnInit } from '@angular/core';
 import { Product } from 'src/app/models/product.model';
-import { OrderItem } from 'src/app/models/order-item.model';
 import { Subscription } from 'rxjs';
 import { User } from 'src/app/models/user.model';
-import { Order } from 'src/app/models/order.model';
 
 @Component({
   selector: 'app-products',
@@ -33,6 +32,10 @@ export class ProductsComponent implements OnInit {
   
   delivery: string = "PICKUP";
   paymentMethod: string = "INVOICE"
+
+  message: any;
+
+  private api = environment.imageApi;
 
   constructor(private productsDataService: ProductsDataService, 
               private usersDataService: UsersDataService, 
@@ -66,11 +69,21 @@ export class ProductsComponent implements OnInit {
     });
   }
 
+  getImage(image) {
+    let imageUrl = this.api + image;
+    return imageUrl;
+  }
+
   async getProducts() {
     this.isLoading = true;
     await new Promise((resolve, _) => {
       this.productsDataService.getProducts().subscribe((products: Product[]) => {
         this.products = products;
+        this.products.forEach(product => {
+          if (product.imagePath == null || product.imagePath == '') {
+            product.imagePath = 'no-image.png';
+          }
+        })
         resolve(products);
       })
     })
@@ -87,7 +100,9 @@ export class ProductsComponent implements OnInit {
   }
 
   async sendOrder() {
-    await new Promise(async (resolve, _) => {
+    await new Promise(async (resolve, reject) => {
+
+      this.isSent = false;
 
       const orderItems: { productId: number, quantity: number }[] = [];
 
@@ -102,12 +117,12 @@ export class ProductsComponent implements OnInit {
         orderItems: orderItems
       };
 
-      console.log("Order: ", order);
-      console.log("Stringified: ", JSON.stringify(order));
-
-      this.ordersDataService.addOrder(order);
-
-      resolve(order);
+      this.ordersDataService.addOrder(order).subscribe(response => {
+        this.message = response;
+        resolve(order);
+      }, error => {
+        reject(error);
+      });
     }).then(() => {
       this.isSent = true;
       this.cart = [];

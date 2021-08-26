@@ -17,8 +17,8 @@
                     <div class="{{ product.promotion > 0 ? 'card border-success bg-light' : 'card' }}"
                         style="width: 100%;">
                         <div class="row no-gutters">
-                            <div class="col-md-3" style="align-self: center;">
-                                <img src="../../../assets/images/cake1.jfif" class="card-img" alt="product.name">
+                            <div class="col-md-3 align-self-center">
+                                <img [src]="getImage(product.imagePath)" class="card-img" alt="{{ product.name }}">
                             </div>
                             <div class="col-md-8">
                                 <div class="card-body">
@@ -75,7 +75,7 @@
         <div class="col-4" style="margin-bottom: 30px;">
             <div class="alert alert-dismissible alert-success" *ngIf="isSent">
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                <strong>Order has been sent successfully!</strong>
+                <strong>{{ message }}</strong>
             </div>
             <div class="card mb-3" style="max-width: 40rem;">
                 <div class="card-header text-lg-center">

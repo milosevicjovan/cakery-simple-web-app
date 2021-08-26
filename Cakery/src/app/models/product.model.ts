@@ -4,4 +4,5 @@ export interface Product {
     description: string;
     price: number;
     promotion: number;
+    imagePath: string;
 }
