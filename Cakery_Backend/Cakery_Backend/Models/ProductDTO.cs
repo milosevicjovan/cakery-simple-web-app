@@ -13,5 +13,6 @@ namespace Cakery_Backend.Models
         public string Description { get; set; }
         public decimal Price { get; set; }
         public decimal Promotion { get; set; }
+        public string ImagePath { get; set; }
     }
 }

@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Microsoft.AspNet.Identity;
+using System.Web;
+using System.IO;
 
 namespace Cakery_Backend.Controllers
 {
@@ -30,7 +32,8 @@ namespace Cakery_Backend.Controllers
                     Name = p.Name,
                     Description = p.Description,
                     Price = Math.Round(p.Price, 2),
-                    Promotion = Math.Round(p.Promotion ?? 0, 2)
+                    Promotion = Math.Round(p.Promotion ?? 0, 2), 
+                    ImagePath = p.ImagePath
                 }).ToListAsync();
 
                 return Ok(products);
@@ -57,7 +60,8 @@ namespace Cakery_Backend.Controllers
                     Name = product.Name,
                     Description = product.Description,
                     Price = Math.Round(product.Price, 2),
-                    Promotion = Math.Round(product.Promotion ?? 0, 2)
+                    Promotion = Math.Round(product.Promotion ?? 0, 2),
+                    ImagePath = product.ImagePath
                 };
 
                 return Ok(productDto);
@@ -92,7 +96,52 @@ namespace Cakery_Backend.Controllers
 
                 await db.SaveChangesAsync();
 
-                return Created("", $"Product { product.Name } is added.");
+                // Returning path that is used to upload image
+                return Created("" + product.ProductID, $"products/{ product.ProductID }");
+            }
+        }
+
+        [Route("api/products/{id}/image")]
+        public async Task<IHttpActionResult> UploadImage(int id)
+        {
+            string userId = User.Identity.GetUserId();
+            bool IsUserAdmin = await UsersController.IsAdmin(userId);
+
+            if (!IsUserAdmin)
+            {
+                return BadRequest("You are not authorized!");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Model state is not valid!");
+            }
+
+            string imageName = null;
+            var httpRequest = HttpContext.Current.Request;
+            //Upload Image
+            var postedFile = httpRequest.Files["Image"];
+            //Create custom filename
+            if (postedFile == null)
+            {
+                return BadRequest("File object is null!");
+            }
+            imageName = id + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + Path.GetExtension(postedFile.FileName);
+            var filePath = HttpContext.Current.Server.MapPath("~/Images/" + imageName);
+            postedFile.SaveAs(filePath);
+
+            using (Cakery_DbContext db = new Cakery_DbContext())
+            {
+                var product = await db.Products.SingleOrDefaultAsync(p => p.ProductID == id);
+
+                if (product == null)
+                {
+                    return BadRequest($"Product with ID={ id } was not found!");
+                }
+
+                product.ImagePath = imageName;
+                await db.SaveChangesAsync();
+                return Ok($"{ product.ImagePath }");
             }
         }
 
@@ -128,7 +177,8 @@ namespace Cakery_Backend.Controllers
                 product.Promotion = newProduct.Promotion;
 
                 await db.SaveChangesAsync();
-                return Ok($"Product { product.Name } is updated!");
+                // Returning path that is used to upload image
+                return Ok($"products/{ product.ProductID }");
             }
         }
 
@@ -161,6 +211,35 @@ namespace Cakery_Backend.Controllers
             }
         }
 
+        [HttpPut]
+        [Route("api/products/{id}/remove-image")]
+        public async Task<IHttpActionResult> DeleteImage(int id)
+        {
+            string userId = User.Identity.GetUserId();
+            bool IsUserAdmin = await UsersController.IsAdmin(userId);
+
+            if (!IsUserAdmin)
+            {
+                return BadRequest("You are not authorized!");
+            }
+
+            using (Cakery_DbContext db = new Cakery_DbContext())
+            {
+                Product product = await db.Products.SingleOrDefaultAsync(p => p.ProductID == id);
+
+                if (product == null)
+                {
+                    return BadRequest($"Product with ID={ id } was not found!");
+                }
+
+                product.ImagePath = null;
+
+                await db.SaveChangesAsync();
+
+                return Ok($"Image for { product.Name } is removed.");
+            }
+        }
+
         // Helper method
         public static async Task<ProductDTO> ProductById(int id)
         {
@@ -179,7 +258,8 @@ namespace Cakery_Backend.Controllers
                     Name = product.Name,
                     Description = product.Description,
                     Price = Math.Round(product.Price, 2),
-                    Promotion = Math.Round(product.Promotion ?? 0, 2)
+                    Promotion = Math.Round(product.Promotion ?? 0, 2),
+                    ImagePath = product.ImagePath
                 };
 
                 return productDto;

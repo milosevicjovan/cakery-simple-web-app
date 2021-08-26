@@ -25,6 +25,7 @@ namespace CakeryDataAccess
         public string Description { get; set; }
         public decimal Price { get; set; }
         public Nullable<decimal> Promotion { get; set; }
+        public string ImagePath { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<OrderItem> OrderItems { get; set; }
