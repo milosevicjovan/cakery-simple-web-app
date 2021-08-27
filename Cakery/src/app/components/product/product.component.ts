@@ -1,3 +1,4 @@
+import { UsersDataService } from 'src/app/services/users.service';
 import { environment } from 'src/environments/environment';
 import { ProductsDataService } from './../../services/products.service';
 import { Component, OnInit } from '@angular/core';
@@ -5,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Product } from 'src/app/models/product.model';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
+import { User } from 'src/app/models/user.model';
 
 @Component({
   selector: 'app-product',
@@ -16,7 +18,7 @@ export class ProductComponent implements OnInit {
   id: number;
   private sub: any;
 
-  private newProduct: boolean = false;
+  public newProduct: boolean = false;
 
   public product: Product;
 
@@ -24,6 +26,8 @@ export class ProductComponent implements OnInit {
   public isDataAvailable = false;
 
   isUpdated: boolean = false;
+  hasError: boolean = false;
+  error: any = undefined;
 
   fileToUpload: any;
 
@@ -31,12 +35,33 @@ export class ProductComponent implements OnInit {
 
   private api = environment.imageApi;
 
-  constructor(private route: ActivatedRoute, private router: Router, private productsDataService: ProductsDataService, private sanitizer: DomSanitizer) { }
+  public message;
+
+  private user: User;
+
+  constructor(private route: ActivatedRoute, private router: Router, private productsDataService: ProductsDataService, private usersDataService: UsersDataService) { }
 
   ngOnInit(): void {
+    this.getCurrentUser().then(() => {
+      if (!this.user.isAdmin){
+
+        this.router.navigate(['/products']);
+      }
+    });
+
     console.log(this.router.url)
     if (this.router.url === '/products/new') {
       this.newProduct = true;
+      this.product = {
+        productID: undefined,
+        name: null,
+        description: null,
+        price: null,
+        promotion: null,
+        imagePath: "no-image.png"
+      };
+      this.isLoading = false;
+      this.isDataAvailable = true;
     } else {
       this.sub = this.route.params.subscribe(params => {
           this.isLoading = true;
@@ -58,7 +83,21 @@ export class ProductComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.sub.unsubscribe();
+    if (this.sub != undefined) {
+      this.sub.unsubscribe();
+    }
+  }
+
+  async getCurrentUser() {
+    await new Promise((resolve, reject) => {
+      this.usersDataService.getCurrentUser().subscribe(user => {
+        this.user = user;
+        resolve(user);
+      }, error => {
+        console.log("Error", error);
+        reject(error);
+      })
+    });
   }
 
   getImage(image) {
@@ -67,28 +106,60 @@ export class ProductComponent implements OnInit {
   }
   
   async getProductById(id: number) {
-    await new Promise((resolve, _) => {
+    this.error = undefined;
+    await new Promise((resolve, reject) => {
       this.productsDataService.getProductById(id).subscribe(product => {
         this.product = product;
         if (this.product.imagePath == null || this.product.imagePath == '') {
           this.product.imagePath = 'no-image.png';
         }
         resolve(product);
+      }, error => {
+        this.error = error;
+        reject(error);
       })
     })
   }
 
+  onDelete() {
+    this.hasError = false;
+    this.productsDataService.deleteProduct(this.id).subscribe(() => {
+      this.router.navigate(['/products']);
+    }, error => {
+      this.message = error.error.message;
+      this.hasError = true;
+    });
+  }
+
   onSave(Image: any) {
     this.isUpdated = false;
-    this.productsDataService.updateProduct(this.id, this.product).subscribe(response => {
-      if (this.fileToUpload != null) {
-        this.uploadImage(response + "", Image);
-      }
-      this.isUpdated = true;
-    }, error => {
-      this.isUpdated = false;
-      console.log("Error: ", error);
-    })
+    if (this.newProduct) {
+      console.log(this.product);
+      this.productsDataService.addProduct(this.product).subscribe(response => {
+        this.id = +response.toString().split('/')[1];
+        this.product.productID = this.id;
+        if (this.fileToUpload != null) {
+          this.uploadImage(response + "", Image);
+        }
+        this.message = "Product " + this.product.name + " has been successfully added into the database."
+        this.newProduct = false;
+        this.isUpdated = true;
+      }, error => {
+        this.isUpdated = false;
+        console.log("Error: ", error);
+      });
+    } else {
+      this.productsDataService.updateProduct(this.id, this.product).subscribe(response => {
+        if (this.fileToUpload != null) {
+          this.uploadImage(response + "", Image);
+        }
+        this.message = "Product has been successfully updated.";
+        this.isUpdated = true;
+      }, error => {
+        this.isUpdated = false;
+        console.log("Error: ", error);
+      });
+    }
   }
 
   uploadImage(productPath: string, Image: any) {
@@ -102,8 +173,6 @@ export class ProductComponent implements OnInit {
   }
 
   handleFileInput(obj: any) {
-    console.log(obj);
-    console.log(obj.target.files[0]);
     this.fileToUpload = obj.target.files[0];
     var reader = new FileReader();
     reader.readAsDataURL(this.fileToUpload); 

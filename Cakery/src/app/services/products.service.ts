@@ -20,11 +20,21 @@ export class ProductsDataService {
     }
 
     getProductById(productId: number) {
-        return this.http.get<Product>(api + "products/" + productId);
+        return this.http.get<Product>(api + "products/" + productId)
+            .pipe(catchError(this.handleError));
     }
 
     addProduct(product: Product) {
-        this.http.post(api + "products/", product);
+        const headerDict = {
+            'Content-Type': 'text/json'
+          }
+      
+          const requestOptions = {
+            headers: new HttpHeaders(headerDict)
+          };
+          
+        return this.http.post(api + "products/", JSON.stringify(product), 
+            requestOptions).pipe(catchError(this.handleError));
     }
 
     updateProduct(productId: number, newProduct: Product) {
@@ -37,11 +47,13 @@ export class ProductsDataService {
           };
           
         return this.http.put(api + "products/update/" + productId, 
-            JSON.stringify(newProduct), requestOptions).pipe(catchError(this.handleError));
+            JSON.stringify(newProduct), requestOptions)
+                .pipe(catchError(this.handleError));
     }
 
     deleteProduct(productId: number) {
-        this.http.delete(api + "products/" + productId);
+        return this.http.delete(api + "products/" + productId)
+            .pipe(catchError(this.handleError));
     }
 
     uploadImage(path: string, image:any) {

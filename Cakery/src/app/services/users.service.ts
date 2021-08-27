@@ -21,8 +21,6 @@ export class UsersDataService {
 
     private tokenTimer: any;
 
-    private user: User;
-
     constructor(private http: HttpClient, private router: Router) {}
 
     getToken() {
@@ -37,16 +35,12 @@ export class UsersDataService {
         return this.authStatusListener.asObservable();
     }
 
-    getUser() {
-        return this.user;
-    }
-
     getUsername() {
         return this.username;
     }
 
     getCurrentUser() {
-        return this.http.get<User>(api + "users/current");
+        return this.http.get<User>(api + "users/current")
     }
 
     register(newUser: NewUser) {
@@ -87,7 +81,7 @@ export class UsersDataService {
                     const now = new Date();
                     const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
                     this.saveAuthData(token, expirationDate, this.username);
-                    resolve(this.user);
+                    resolve(this.getAuthData());
                     this.router.navigate(['/products']);
                 }
             }, error => {
