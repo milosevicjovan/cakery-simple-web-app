@@ -43,21 +43,25 @@ export class UsersDataService {
         return this.http.get<User>(api + "users/current")
     }
 
-    register(newUser: NewUser) {
-        const headerDict = {
-            'Content-Type': 'text/json'
-        };
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-        };
-
-        this.http.post(api + '/account/register', JSON.stringify(newUser), requestOptions)
-        .subscribe(() => {
-            this.router.navigate(['/login']);
-        }, error => {
-            this.authStatusListener.next(false);
-        })
+    async register(newUser: NewUser) {
+        await new Promise((resolve, reject) => {
+            const headerDict = {
+                'Content-Type': 'text/json'
+            };
+    
+            const requestOptions = {
+                headers: new HttpHeaders(headerDict)
+            };
+    
+            return this.http.post(api + '/account/register', JSON.stringify(newUser), requestOptions)
+            .subscribe(response => {
+                this.router.navigate(['/login']);
+                resolve(response);
+            }, error => {
+                this.authStatusListener.next(false);
+                reject(error);
+            })
+        });
     }
 
     handleError(error: HttpErrorResponse) {
