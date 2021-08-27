@@ -1,12 +1,14 @@
-<div class="d-flex justify-content-center">
-    <div class="spinner-border text-primary" style="width: 10rem; height: 10rem; border-width: 0.5rem; margin: 50px;" role="status"
-        *ngIf="isLoading">
-        <span class="sr-only"></span>
+<div *ngIf="isLoading && !isDataAvailable" class="text-center">
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border text-primary" style="width: 10rem; height: 10rem; border-width: 0.5rem; margin: 50px;" role="status">
+            <span class="sr-only"></span>
+        </div>
     </div>
+    <h4>Loading...</h4>
 </div>
 
-<div class="container" style="padding: 20px; margin-bottom: 30px; margin-top: 30px;">
-    <div class="alert alert-dismissible alert-danger" *ngIf="!isLoading && !isDataAvailable">
+<div class="container" *ngIf="!isLoading && !isDataAvailable" style="padding: 20px; margin-bottom: 30px; margin-top: 30px;">
+    <div class="alert alert-dismissible alert-danger">
         <strong>There's no data found for order where order ID is {{ id }}.</strong>
         <hr>
         <p>Original error: </p>
@@ -16,106 +18,108 @@
       </div>
 </div>
 
-<div class="container">
-    <div class="container" *ngIf="!isLoading && isDataAvailable" style="padding: 20px; margin-bottom: 30px; margin-top: 30px; border: solid; border-radius: 10px;">
-        <div class="row">
-            <div class="col-2">
-                <h5>Username: </h5>
-            </div>
-            <div class="col-4">
-                <h5><strong>{{ order.username }}</strong></h5>
-            </div>
-            <div class="col-2">
-                <h5>Time: </h5>
-            </div>
-            <div class="col-4">
-                <h5><strong>{{ order.time }}</strong></h5>
+<div class="container" *ngIf="!isLoading && isDataAvailable">
+    <div class="card text-dark">
+        <div class="card-header">
+            <div class="row">
+                <div class="col">
+                    <h5>Order ID: <strong>{{ order.orderID }}</strong></h5>
+                </div>
+                <div class="col" style="text-align: right;">
+                    <h5><i class="far fa-calendar-alt"></i><strong> {{ order.time | date:'dd/MM/yyyy' }} </strong><i class="far fa-clock"></i><strong> {{ order.time | date:'HH:mm:ss' }}</strong></h5>
+                </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-2">
-                <h5>Name: </h5>
-            </div>
-            <div class="col-4">
-                <h5><strong>{{ order.firstName }} {{ order.lastName }}</strong></h5>
-            </div>
-            <div class="col-2">
-                <h5>Delivery: </h5>
-            </div>
-            <div class="col-4">
-                <h5><strong>{{ order.delivery }}</strong></h5>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-2">
-                <h5>Address: </h5>
-            </div>
-            <div class="col-4">
-                <h5><strong>{{ order.address }}</strong></h5>
-            </div>
-            <div class="col-2">
-                <h5>Payment Method: </h5>
-            </div>
-            <div class="col-4">
-                <h5><strong>{{ order.paymentMethod }}</strong></h5>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-3">
+                    <div class="row">
+                        <h6><i class="fas fa-user"></i> Name:</h6>
+                    </div>
+                    <div class="row">
+                        <h5><strong>{{ order.firstName }} {{ order.lastName }}</strong></h5>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="row">
+                        <h6><i class="fas fa-map-marker-alt"></i> Address:</h6>
+                    </div>
+                    <div class="row">
+                        <h5><strong>{{ order.address }}</strong></h5>
+                    </div>
+                </div>
+                <div class="col-2" style="text-align: center;">
+                    <div class="row">
+                        <h6><i class="fas fa-question"></i> Delivery method:</h6>
+                    </div>
+                    <div class="row">
+                            <h5><strong>{{ order.delivery }} </strong>
+                                <i *ngIf="order.delivery=='DELIVERY'" class="fas fa-truck"></i>
+                                <i *ngIf="order.delivery=='PICKUP'" class="fas fa-store"></i>
+                            </h5>
+                    </div>
+                </div>
+                <div class="col-2" style="text-align: center;">
+                    <div class="row">
+                        <h6><i class="fas fa-dollar-sign"></i> Payment method:</h6>
+                    </div>
+                    <div class="row">
+                        <h5><strong>{{ order.paymentMethod }} </strong>
+                            <i *ngIf="order.paymentMethod=='CARD'" class="far fa-credit-card"></i>
+                            <i *ngIf="order.paymentMethod=='CASH'" class="far fa-money-bill-alt"></i>
+                            <i *ngIf="order.paymentMethod=='INVOICE'" class="fas fa-file-invoice"></i>
+                        </h5>
+                    </div>
+                </div>
+                <div class="col-2 text-primary" style="text-align: right;">
+                    <div class="row">
+                        <h6><strong>Total:</strong></h6>
+                    </div>
+                    <div class="row">
+                        <h5><strong>{{ order.sum | number : '1.2-2' }}</strong></h5>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="container border-primary" *ngIf="!isLoading && isDataAvailable">
-        <hr>
-        <div class="d-flex justify-content-between">
-            <div class="p-2">
-                <h6>No:</h6>
-            </div>
-            <div class="p-2">
-                <h6>Product ID:</h6>
-            </div>
-            <div class="p-2">
-                <h6>Product Name:</h6>
-            </div>
-            <div class="p-2">
-                <h6>Quantity:</h6>
-            </div>
-            <div class="p-2">
-                <h6>Price:</h6>
-            </div>
-            <div class="p-2">
-                <h6>Promotion:</h6>
-            </div>
-            <div class="p-2">
-                <h6>Price with promotion:</h6>
-            </div>
-            <div class="p-2">
-                <h6>Sum:</h6>
-            </div>
-        </div>
-        <div class="d-flex justify-content-between" *ngFor="let item of orderItems">
-            <div class="p-2">
-                <h6>{{ orderItems.indexOf(item) + 1 }}</h6>
-            </div>
-            <div class="p-2">
-                <h6>{{ item.productID }}</h6>
-            </div>
-            <div class="p-2">
-                <h6>{{ item.name }}</h6>
-            </div>
-            <div class="p-2">
-                <h6>{{ item.quantity }}</h6>
-            </div>
-            <div class="p-2">
-                <h6>{{ item.price }}</h6>
-            </div>
-            <div class="p-2">
-                <h6>{{ item.promotion }}</h6>
-            </div>
-            <div class="p-2">
-                <h6>{{ item.price - (item.price * (item.promotion / 100)) }}</h6>
-            </div>
-            <div class="p-2">
-                <h6>{{ item.sum }}</h6>
-            </div>
-        </div>
-    </div>
+    <hr>
+
+    <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">No</th>
+            <th scope="col">Product ID</th>
+            <th scope="col">Name</th>
+            <th style="text-align: right;" scope="col">Quantity</th>
+            <th style="text-align: right;" scope="col">Price</th>
+            <th style="text-align: right;" scope="col">Promotion</th>
+            <th style="text-align: right;" scope="col">Price with promotion</th>
+            <th style="text-align: right;" scope="col">Sum</th>
+          </tr>
+        </thead>
+        <tbody *ngFor="let item of orderItems, index as i">
+          <tr [ngClass]="(i+1) % 2 == 0 ? 'table-primary' : ''">
+            <th scope="row">{{ i + 1 }}.</th>
+            <td>{{ item.productID }}</td>
+            <td>{{ item.name }}</td>
+            <td style="text-align: right;">{{ item.quantity }}</td>
+            <td style="text-align: right;">{{ item.price | number : '1.2-2' : 'sr' }}</td>
+            <td style="text-align: right;"><strong>{{ item.promotion | number : '1.2-2' : 'sr' }} %</strong></td>
+            <td style="text-align: right;">{{ (item.price - (item.price * (item.promotion / 100))) | number : '1.2-2' : 'sr' }}</td>
+            <td style="text-align: right;"><strong>{{ item.sum | number : '1.2-2' : 'sr' }}</strong></td>
+          </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="7" style="text-align: right;">
+                    <h4>Total Sum:</h4>
+                </td>
+                <td style="text-align: right;">
+                    <h4><strong>{{ order.sum | number : '1.2-2' : 'sr' }}</strong></h4>
+                </td>
+            </tr>
+        </tfoot>
+      </table>
     
 </div>
