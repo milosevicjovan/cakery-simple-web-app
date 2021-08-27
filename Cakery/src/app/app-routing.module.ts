@@ -1,7 +1,6 @@
 import { ProductComponent } from './components/product/product.component';
 import { RegisterComponent } from './components/register/register.component';
 import { LoginComponent } from './components/login/login.component';
-import { CartComponent } from './components/cart/cart.component';
 import { OrdersComponent } from './components/orders/orders.component';
 import { OrderComponent } from './components/order/order.component';
 import { ProductsComponent } from './components/products/products.component';
@@ -36,10 +35,6 @@ const routes: Routes = [
   }, {
     path: 'order-details/:id',
     component: OrderComponent,
-    canActivate: [AuthGuard]
-  }, {
-    path: 'cart',
-    component: CartComponent,
     canActivate: [AuthGuard]
   }, {
     path: 'login',
