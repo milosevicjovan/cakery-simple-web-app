@@ -1,40 +1,35 @@
-<div class="wrapper fadeInDown">
+<div class="wrapper">
   <div id="formContent">
-    <!-- Tabs Titles -->
 
     <div class="d-flex justify-content-center" style="margin-top: 20px;">
       <h5><strong>Cakery Web Shop - Log In</strong></h5>
     </div>
 
-    <!-- Icon -->
-    <div class="fadeIn first" *ngIf="!isLoading">
+    <div *ngIf="!isLoading">
       <img src="../../../assets/icon.png" id="icon" alt="User Icon" />
     </div>
 
     <div *ngIf="isLoading">
-      <div class="spinner-border text-primary" style="width: 5rem; height: 5rem; margin: 15px;" role="status"
+      <div class="spinner-border text-primary" role="status"
         >
         <span class="sr-only"></span>
       </div>
       <p>Loading...</p>
     </div>
 
-    <!-- Login Form -->
-    <div *ngIf="hasError" class="alert alert-dismissible alert-danger" style="width: 85%; text-align: center; display: inline-block; margin: 20px 5px 5px 5px;">
+    <div *ngIf="hasError" class="alert alert-dismissible alert-danger">
       <strong>{{ error.error.error_description }}</strong>
     </div>
-    <form>
 
+    <form>
       <input type="text" id="username" class="fadeIn second" name="username" placeholder="Username" [(ngModel)]="username">
       <input type="password" id="password" class="fadeIn third" name="password" placeholder="Password" [(ngModel)]="password">
-      <!--input type="submit" class="fadeIn fourth" value="Log In">-->
     </form>
 
-    <!-- Remind Passowrd -->
     <div id="formFooter">
         <button class="btn btn-primary btn-lg fadeIn fourth" (click)="onLogin()" >Log In <i class="fas fa-sign-in-alt"></i></button>
         <br><br>
-        <a href="/register">Don't have an account? Register now!</a>
+        <a [routerLink]="['/register']"><i class="fas fa-user-circle"></i> Don't have an account? Register now!</a>
     </div>
 
   </div>

@@ -18,8 +18,7 @@
       </div>
 </div>
 
-<div class="container border-dark" id="form" *ngIf="newProduct || (!isLoading && isDataAvailable)"
-    style="margin-top: 30px; margin-bottom: 30px; padding: 20px; border-radius: 10px; ">
+<div class="container border-dark" *ngIf="newProduct || (!isLoading && isDataAvailable)">
     <form #form=ngForm class="row">
         <div class="col-8">
             <div style="width: 70%;" class="alert alert-dismissible alert-success" *ngIf="isUpdated">
