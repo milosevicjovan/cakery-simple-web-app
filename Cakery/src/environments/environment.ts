@@ -17,3 +17,12 @@ export const environment = {
  * on performance if an error is thrown.
  */
 // import 'zone.js/dist/zone-error';  // Included with Angular CLI.
+
+/*
+* For production testing (Backend deployed on local IIS)
+* 
+* serviceApi: "http://192.168.0.101/api/",
+* loginApi: "http://192.168.0.101/Token",
+* imageApi: "http://192.168.0.101/Images/"
+*
+*/

@@ -14,6 +14,7 @@ export class HeaderComponent implements OnInit {
   userIsAuthenticated = false;
   private authListenerSubs: Subscription;
 
+
   constructor(private usersDataService: UsersDataService, private router: Router) {}
 
   ngOnInit() {
@@ -23,8 +24,6 @@ export class HeaderComponent implements OnInit {
           this.userIsAuthenticated = isAuthenticated;
         });
   }
-
-
 
   logOut() {
     this.usersDataService.logOut();
