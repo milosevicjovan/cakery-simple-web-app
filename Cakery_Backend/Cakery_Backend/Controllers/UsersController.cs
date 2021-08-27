@@ -64,6 +64,12 @@ namespace Cakery_Backend.Controllers
             using (Cakery_DbContext db = new Cakery_DbContext())
             {
                 Role role = await db.Roles.SingleOrDefaultAsync(r => r.Id.Equals(userId));
+
+                if (role == null)
+                {
+                    return false;
+                }
+
                 if (role.Name.Equals("admin"))
                 {
                     return true;
