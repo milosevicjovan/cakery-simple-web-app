@@ -203,6 +203,13 @@ namespace Cakery_Backend.Controllers
                     return BadRequest($"Product with ID={ id } was not found!");
                 }
 
+                List<OrderItem> orderItems = await db.OrderItems.Where(oi => oi.ProductID == product.ProductID).ToListAsync();
+
+                if (orderItems.Count > 0)
+                {
+                    return BadRequest($"Cannot delete product { product.Name }. {orderItems.Count} orders with this product exist.");
+                }
+
                 db.Products.Remove(product);
 
                 await db.SaveChangesAsync();
