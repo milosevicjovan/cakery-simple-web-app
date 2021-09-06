@@ -1,4 +1,5 @@
 ﻿using Cakery_Backend.Models;
+using Cakery_Backend.Services;
 using CakeryDataAccess;
 using Microsoft.AspNet.Identity;
 using System;
@@ -16,13 +17,20 @@ namespace Cakery_Backend.Controllers
     [Authorize]
     public class OrderItemsController : ApiController
     {
+        private UsersService usersService;
+
+        public OrderItemsController()
+        {
+            usersService = new UsersService();
+        }
+
         [HttpGet]
         [Route("api/orders/items/{id}")]
         [ResponseType(typeof(OrderItemDTO))]
         public async Task<IHttpActionResult> GetItemsForOrder(int id)
         {
             string userId = User.Identity.GetUserId();
-            bool IsUserAdmin = await UsersController.IsAdmin(userId);
+            bool IsUserAdmin = await UsersService.IsAdmin(userId);
 
             string orderUser = await OrdersController.OrderUser(id);
 

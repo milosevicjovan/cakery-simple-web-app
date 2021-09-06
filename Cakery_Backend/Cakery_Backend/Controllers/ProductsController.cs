@@ -12,12 +12,20 @@ using System.Web.Http.Description;
 using Microsoft.AspNet.Identity;
 using System.Web;
 using System.IO;
+using Cakery_Backend.Services;
 
 namespace Cakery_Backend.Controllers
 {
     [Authorize]
     public class ProductsController : ApiController
     {
+        private UsersService usersService;
+
+        public ProductsController()
+        {
+            usersService = new UsersService();
+        }
+
         [HttpGet]
         [ResponseType(typeof(ProductDTO))]
         [Route("api/products")]
@@ -73,7 +81,7 @@ namespace Cakery_Backend.Controllers
         public async Task<IHttpActionResult> AddProduct([FromBody]Product product)
         {
             string userId = User.Identity.GetUserId();
-            bool IsUserAdmin = await UsersController.IsAdmin(userId);
+            bool IsUserAdmin = await UsersService.IsAdmin(userId);
 
             if (!IsUserAdmin)
             {
@@ -105,7 +113,7 @@ namespace Cakery_Backend.Controllers
         public async Task<IHttpActionResult> UploadImage(int id)
         {
             string userId = User.Identity.GetUserId();
-            bool IsUserAdmin = await UsersController.IsAdmin(userId);
+            bool IsUserAdmin = await UsersService.IsAdmin(userId);
 
             if (!IsUserAdmin)
             {
@@ -150,7 +158,7 @@ namespace Cakery_Backend.Controllers
         public async Task<IHttpActionResult> UpdateProduct(int id, [FromBody] Product newProduct)
         {
             string userId = User.Identity.GetUserId();
-            bool IsUserAdmin = await UsersController.IsAdmin(userId);
+            bool IsUserAdmin = await UsersService.IsAdmin(userId);
 
             if (!IsUserAdmin)
             {
@@ -187,7 +195,7 @@ namespace Cakery_Backend.Controllers
         public async Task<IHttpActionResult> DeleteProduct(int id)
         {
             string userId = User.Identity.GetUserId();
-            bool IsUserAdmin = await UsersController.IsAdmin(userId);
+            bool IsUserAdmin = await UsersService.IsAdmin(userId);
 
             if (!IsUserAdmin)
             {
@@ -223,7 +231,7 @@ namespace Cakery_Backend.Controllers
         public async Task<IHttpActionResult> DeleteImage(int id)
         {
             string userId = User.Identity.GetUserId();
-            bool IsUserAdmin = await UsersController.IsAdmin(userId);
+            bool IsUserAdmin = await UsersService.IsAdmin(userId);
 
             if (!IsUserAdmin)
             {

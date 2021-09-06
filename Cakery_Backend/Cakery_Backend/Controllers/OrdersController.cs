@@ -1,4 +1,5 @@
 ﻿using Cakery_Backend.Models;
+using Cakery_Backend.Services;
 using CakeryDataAccess;
 using Microsoft.AspNet.Identity;
 using System;
@@ -16,6 +17,13 @@ namespace Cakery_Backend.Controllers
     [Authorize]
     public class OrdersController : ApiController
     {
+        private UsersService usersService;
+
+        public OrdersController()
+        {
+            this.usersService = new UsersService();
+        }
+
         [HttpDelete]
         [Route("api/orders/{id}")]
         public async Task<IHttpActionResult> DeleteOrder(int id)
@@ -59,7 +67,7 @@ namespace Cakery_Backend.Controllers
         public async Task<IHttpActionResult> GetAllOrders()
         {
             string userId = User.Identity.GetUserId();
-            bool IsUserAdmin = await UsersController.IsAdmin(userId);
+            bool IsUserAdmin = await UsersService.IsAdmin(userId);
 
             using (Cakery_DbContext db = new Cakery_DbContext())
             {
@@ -84,7 +92,7 @@ namespace Cakery_Backend.Controllers
 
                 foreach (Order order in orders)
                 {
-                    UserDTO user = await UsersController.GetUserById(order.UserID);
+                    UserDTO user = await usersService.GetUserById(order.UserID);
 
                     ordersDto.Add(new OrderDTO()
                     {
@@ -117,7 +125,7 @@ namespace Cakery_Backend.Controllers
         public async Task<IHttpActionResult> GetOrderById(int id)
         {
             string userId = User.Identity.GetUserId();
-            bool IsUserAdmin = await UsersController.IsAdmin(userId);
+            bool IsUserAdmin = await UsersService.IsAdmin(userId);
 
             using (Cakery_DbContext db = new Cakery_DbContext())
             {
@@ -144,7 +152,7 @@ namespace Cakery_Backend.Controllers
                     return BadRequest("Order was not found!");
                 }
 
-                UserDTO user = await UsersController.GetUserById(order.UserID);
+                UserDTO user = await usersService.GetUserById(order.UserID);
 
                 if (user == null)
                 {
