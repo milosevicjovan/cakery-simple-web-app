@@ -4,8 +4,6 @@ import { ProductsDataService } from './../../services/products.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Product } from 'src/app/models/product.model';
-import { FormsModule } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
 import { User } from 'src/app/models/user.model';
 
 @Component({

@@ -1,9 +1,7 @@
 import { UsersDataService } from './../../services/users.service';
 import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { NgForm } from '@angular/forms';
 import { User } from 'src/app/models/user.model';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
